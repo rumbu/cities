@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextField } from '@rmwc/textfield';
-import { Icon } from '@rmwc/icon';
 import './App.css';
 import '@material/button/dist/mdc.button.css';
 import '@material/chips/dist/mdc.chips.css';
@@ -17,10 +16,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div class="App-form">
-            <TextField icon="filter_alt" placeholder="Type to filter by city name or country"
-              style={{width: '100%'}}
-            />
+        <div className="App-form">
+          <p>
+            <label htmlFor="city">Select your favorite cities</label>
+          </p>
+          <TextField icon="filter_alt" placeholder="Type to filter by city name or country"
+            style={{width: '100%'}}
+            id="city"
+          />
         </div>
 
         <a
