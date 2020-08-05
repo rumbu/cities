@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@rmwc/chip": "^6.1.3",
-    "@rmwc/formfield": "^6.0.14",
     "@rmwc/icon": "^6.1.3",
     "@rmwc/list": "^6.1.3",
     "@rmwc/snackbar": "^6.1.3",
