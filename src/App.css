@@ -7,10 +7,6 @@
   font-size: calc(5px + 2vmin);
 }
 
-.App-label {
-  text-align: center;
-}
-
 .App-form {
   width: 50%;
   min-width: 326px;
@@ -28,5 +24,9 @@
 
 .App-loader {
   left: calc(50% - 12px);
-  margin: 15px 0;
+  margin: 1em 0;
+}
+
+.u-center {
+  text-align: center;
 }

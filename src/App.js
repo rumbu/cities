@@ -10,6 +10,7 @@ import {
 } from '@rmwc/list';
 import { Snackbar, SnackbarAction } from '@rmwc/snackbar';
 import { CircularProgress } from '@rmwc/circular-progress';
+import { Button } from '@rmwc/button';
 import './App.css';
 import '@material/button/dist/mdc.button.css';
 import '@material/chips/dist/mdc.chips.css';
@@ -40,6 +41,9 @@ function CityList(props) {
     })}
     {props.isLoading &&
       <CircularProgress className="App-loader" />
+    }
+    {!props.isLoading && !props.isLastPage &&
+      <p className="u-center"><Button onClick={props.onMore}>Load more</Button></p>
     }
     </List>
   );
@@ -88,7 +92,7 @@ class App extends React.Component {
     });
   }
 
-  fetchCities() {
+  fetchCities = () => {
     if (this.state.isLoading || this.state.isLastPage) {
       return;
     }
@@ -146,7 +150,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <div className="App-form">
-            <p className="App-label">
+            <p className="u-center">
               <label htmlFor="city">Select your favorite cities</label>
             </p>
             <TextField icon="filter_alt" placeholder="Type to filter by city name or country"
@@ -155,7 +159,7 @@ class App extends React.Component {
             />
 
             <CityList list={this.state.list} selected={this.state.selected} isLoading={this.state.isLoading}
-              onToggle={this.onToggle}
+              onToggle={this.onToggle} isLastPage={this.state.isLastPage} onMore={this.fetchCities}
             />
 
           </div>
