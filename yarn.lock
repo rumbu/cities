@@ -1372,6 +1372,21 @@
   dependencies:
     tslib "^1.9.3"
 
+"@material/button@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@material/button/-/button-5.1.0.tgz#22986368ce12faad142ba01c4aeb42f6a380dffb"
+  integrity sha512-umeuIEbeRRd0cY+5axhrBoM0dvJ4YfoTsUbKgz4ctFxHLBsgthFUIXSa3Ot15s284UP6kjslK0LCMqzhirZxeQ==
+  dependencies:
+    "@material/density" "^5.1.0"
+    "@material/elevation" "^5.1.0"
+    "@material/feature-targeting" "^5.1.0"
+    "@material/ripple" "^5.1.0"
+    "@material/rtl" "^5.1.0"
+    "@material/shape" "^5.1.0"
+    "@material/theme" "^5.1.0"
+    "@material/touch-target" "^5.1.0"
+    "@material/typography" "^5.1.0"
+
 "@material/checkbox@^5.1.0":
   version "5.1.0"
   resolved "https://registry.npmjs.org/@material/checkbox/-/checkbox-5.1.0.tgz#2f689f6a409f0ed906a0d73bcd0078a768eaf9d1"
@@ -1448,6 +1463,18 @@
     "@material/typography" "^5.1.0"
     tslib "^1.9.3"
 
+"@material/icon-button@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@material/icon-button/-/icon-button-5.1.0.tgz#224c5607ca272feac41ec223816ee1233fb2b018"
+  integrity sha512-HLdSkqDH1wx5YSBHz8dGEL2BKv8IDqhRul7wea9i9/3RcQz3hb5+OYpq8iiXqpxcVPVlWNud2w1oyvmEXRTdZQ==
+  dependencies:
+    "@material/base" "^5.1.0"
+    "@material/density" "^5.1.0"
+    "@material/feature-targeting" "^5.1.0"
+    "@material/ripple" "^5.1.0"
+    "@material/theme" "^5.1.0"
+    tslib "^1.9.3"
+
 "@material/line-ripple@^5.1.0":
   version "5.1.0"
   resolved "https://registry.npmjs.org/@material/line-ripple/-/line-ripple-5.1.0.tgz#86cb1b8a91bf010231109211b8eb38ad059f5f23"
@@ -1512,6 +1539,25 @@
   dependencies:
     "@material/feature-targeting" "^5.1.0"
     "@material/rtl" "^5.1.0"
+
+"@material/snackbar@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@material/snackbar/-/snackbar-5.1.0.tgz#f5a075cebc314f5d3fbe887c7d2231c9587e9d9d"
+  integrity sha512-bn6WydEGKZxq24aZ6BfnLGPbhCww2srOe+mn2W9VJFBfZEh9qnCcya2jHs295pPbzRtDM1b2oR2LiAKBfIBt3A==
+  dependencies:
+    "@material/animation" "^5.1.0"
+    "@material/base" "^5.1.0"
+    "@material/button" "^5.1.0"
+    "@material/dom" "^5.1.0"
+    "@material/elevation" "^5.1.0"
+    "@material/feature-targeting" "^5.1.0"
+    "@material/icon-button" "^5.1.0"
+    "@material/ripple" "^5.1.0"
+    "@material/rtl" "^5.1.0"
+    "@material/shape" "^5.1.0"
+    "@material/theme" "^5.1.0"
+    "@material/typography" "^5.1.0"
+    tslib "^1.9.3"
 
 "@material/textfield@^5.1.0":
   version "5.1.0"
@@ -1582,6 +1628,18 @@
     mutation-observer "^1.0.3"
     tslib "^1.10.0"
 
+"@rmwc/button@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.npmjs.org/@rmwc/button/-/button-6.1.3.tgz#87e84b32e706dd986b1b56f32c19beac09aab06c"
+  integrity sha512-ZY8pjWfp3exALPsqSHklIbrrVBUyF6UCKzU6lwGV7U/rvihZ6tRtt2uuv5w5S0NvFHU3jzH1dIZxWxPS75eZJA==
+  dependencies:
+    "@material/button" "^5.1.0"
+    "@rmwc/base" "^6.0.14"
+    "@rmwc/icon" "^6.1.3"
+    "@rmwc/provider" "^6.1.3"
+    "@rmwc/ripple" "^6.1.3"
+    "@rmwc/types" "^6.0.5"
+
 "@rmwc/chip@^6.1.3":
   version "6.1.3"
   resolved "https://registry.npmjs.org/@rmwc/chip/-/chip-6.1.3.tgz#455dee00721804ebaf1882192b7199ebdb0d7867"
@@ -1600,6 +1658,17 @@
   dependencies:
     "@material/floating-label" "^5.1.0"
     "@rmwc/base" "^6.0.14"
+    "@rmwc/types" "^6.0.5"
+
+"@rmwc/icon-button@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.npmjs.org/@rmwc/icon-button/-/icon-button-6.1.3.tgz#3e19821323fffd9c9ac20c1a73799636bbf8fb95"
+  integrity sha512-OPDByy+CRAu8hF/EKSz/SPMuf2wf4aVe3rcG+PQd2UFYQ/Fa3ds4Ki/4B4HmCEGaghzA6myobNl0AWvBgJ7xHw==
+  dependencies:
+    "@material/icon-button" "^5.1.0"
+    "@rmwc/base" "^6.0.14"
+    "@rmwc/icon" "^6.1.3"
+    "@rmwc/ripple" "^6.1.3"
     "@rmwc/types" "^6.0.5"
 
 "@rmwc/icon@^6.1.3":
@@ -1657,6 +1726,18 @@
     "@material/ripple" "^5.1.0"
     "@rmwc/base" "^6.0.14"
     "@rmwc/provider" "^6.1.3"
+    "@rmwc/types" "^6.0.5"
+
+"@rmwc/snackbar@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.npmjs.org/@rmwc/snackbar/-/snackbar-6.1.3.tgz#545db1fde3587247e2d9fa845215206a3dcd8798"
+  integrity sha512-P22wPHDA4etO0/Jsiju2ePcmCIfd0nV61gpeaiqPUcqkU45oo5scilnKGF+V9OCKuwiaR/yWyMy6d2/p0y6RzA==
+  dependencies:
+    "@material/snackbar" "^5.1.0"
+    "@rmwc/base" "^6.0.14"
+    "@rmwc/button" "^6.1.3"
+    "@rmwc/icon" "^6.1.3"
+    "@rmwc/icon-button" "^6.1.3"
     "@rmwc/types" "^6.0.5"
 
 "@rmwc/textfield@^6.1.3":
