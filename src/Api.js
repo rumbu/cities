@@ -80,10 +80,9 @@ class Api {
       .then(json => {
         if (json.error) {
           return Promise.reject(json.message);
-        } else {
-          pager.next(json.total);
-          return json;
         }
+        pager.next(json.total);
+        return json;
       })
       .finally(() => this.#controller = null);
   }
@@ -110,6 +109,13 @@ class Api {
       method: 'PATCH',
       body: JSON.stringify({[id]: enabled})
     })
+      .then(res => res.json())
+      .then(json => {
+        if (json.error) {
+          return Promise.reject(json.message);
+        }
+        return json;
+      });
   }
 }
 

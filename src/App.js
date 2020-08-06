@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from '@rmwc/textfield';
-import { List, ListItem, ListItemText, ListItemGraphic, ListItemPrimaryText, ListItemSecondaryText } from '@rmwc/list';
-import { Snackbar, SnackbarAction } from '@rmwc/snackbar';
+import { List, ListItem, ListItemText, ListItemGraphic, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText } from '@rmwc/list';
+import { SnackbarAction, SnackbarQueue, createSnackbarQueue } from '@rmwc/snackbar';
 import { CircularProgress } from '@rmwc/circular-progress';
 import { Button } from '@rmwc/button';
 import Api from './Api.js';
@@ -24,12 +24,15 @@ function CityList(props) {
     {props.list.map((city) => {
       const selected = props.selected.includes(city.geonameid);
       return (
-        <ListItem key={city.geonameid} activated={selected} onClick={e => props.onToggle(city.geonameid)}>
+        <ListItem key={city.geonameid} activated={selected} onClick={e => props.onToggle(city.geonameid, city.name)}>
           <ListItemGraphic icon={selected ? 'check_box' : 'check_box_outline_blank'} />
           <ListItemText>
             <ListItemPrimaryText>{city.name}</ListItemPrimaryText>
             <ListItemSecondaryText>{city.subcountry} - {city.country}</ListItemSecondaryText>
           </ListItemText>
+          {props.updatingId === city.geonameid &&
+            <ListItemMeta icon={<CircularProgress />} />
+          }
         </ListItem>
       );
     })}
@@ -43,23 +46,14 @@ function CityList(props) {
   );
 };
 
-function Error(props) {
-  if (!props.error) {
-    return null;
-  }
-
-  return (
-    <Snackbar
-      open
-      dismissesOnAction
-      message={props.error}
-      action={
-        <SnackbarAction
-          label="Dismiss"
-        />
-      }
-    />
-  );
+const queue = createSnackbarQueue();
+function showError(message) {
+  queue.notify({
+    open: true,
+    title: message,
+    dismissesOnAction: true,
+    actions: [{title: 'Dismiss'}]
+  });
 }
 
 class App extends React.Component {
@@ -75,7 +69,8 @@ class App extends React.Component {
       isLastPage: false,
       isLoading: false,
       list: [],
-      selected: []
+      selected: [],
+      updatingId: 0
     };
 
     this.api = new Api();
@@ -89,39 +84,45 @@ class App extends React.Component {
     const { list } = this.state;
     this.setState({isLoading: true, error: null});
     this.api.getList(this.state.filter)
-      .then(result => {
+      .then(result => this.setState({
+          isLoading: false,
+          isLastPage: this.api.isLastPage,
+          list: list.concat(result.data)
+        }),
+        error => {
           this.setState({
-            isLoading: false,
-            isLastPage: this.api.isLastPage,
-            list: list.concat(result.data)
+            isLoading: false
           })
-        },
-        error => this.fetchFailed(error)
+          showError(error);
+        }
       );
-  }
-
-  fetchFailed(error) {
-    this.setState({
-      isLoading: false,
-      error
-    });
   }
 
   componentDidMount() {
     this.fetchCities();
   }
 
-  onToggle = (id) => {
+  onToggle = (id, label) => {
     const selected = [...this.state.selected];
     const index = selected.indexOf(id);
     const enabled = selected.indexOf(id) > -1;
-    if (!enabled && -1 === index) {
-      selected.push(id);
-    } else if (enabled && index > -1) {
-      selected.splice(index, 1);
-    }
+    this.setState({updatingId: id});
 
-    this.setState({ selected });
+    this.api.updatePref(id, enabled)
+      .then(() => {
+          if (!enabled && -1 === index) {
+            selected.push(id);
+          } else if (enabled && index > -1) {
+            selected.splice(index, 1);
+          }
+
+          this.setState({ selected, updatingId: 0 });
+        },
+        error => {
+          this.setState({updatingId: 0});
+          showError(`Could not save ${label}`);
+        }
+      );
   }
 
   render() {
@@ -138,12 +139,13 @@ class App extends React.Component {
             />
 
             <CityList list={this.state.list} selected={this.state.selected} isLoading={this.state.isLoading}
+              updatingId={this.state.updatingId}
               onToggle={this.onToggle} isLastPage={this.state.isLastPage} onMore={this.fetchCities}
             />
 
           </div>
 
-          <Error error={this.state.error}/>
+          <SnackbarQueue messages={queue.messages} />
 
           <a
             className="App-link"
