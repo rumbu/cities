@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from '@rmwc/textfield';
 import { List, ListItem, ListItemText, ListItemGraphic, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText } from '@rmwc/list';
-import { SnackbarAction, SnackbarQueue, createSnackbarQueue } from '@rmwc/snackbar';
+import { SnackbarQueue, createSnackbarQueue } from '@rmwc/snackbar';
 import { CircularProgress } from '@rmwc/circular-progress';
 import { Button } from '@rmwc/button';
 import Api from './Api.js';
@@ -120,7 +120,7 @@ class App extends React.Component {
         },
         error => {
           this.setState({updatingId: 0});
-          showError(`Could not save ${label}`);
+          showError(`${label} - ${error}`);
         }
       );
   }

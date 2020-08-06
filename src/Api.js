@@ -107,9 +107,12 @@ class Api {
   updatePref(id, enabled) {
     return fetch(`${this.config.baseUrl}${this.config.prefsEndpoint}`, {
       method: 'PATCH',
-      body: JSON.stringify({[id]: enabled})
+      body: JSON.stringify({[id]: enabled}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
-      .then(res => res.json())
+      .then(res => res.status >= 300 ? res.json() : 'OK')
       .then(json => {
         if (json.error) {
           return Promise.reject(json.message);
