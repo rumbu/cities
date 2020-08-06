@@ -1,16 +1,10 @@
 import React from 'react';
 import { TextField } from '@rmwc/textfield';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemGraphic,
-  ListItemPrimaryText,
-  ListItemSecondaryText
-} from '@rmwc/list';
+import { List, ListItem, ListItemText, ListItemGraphic, ListItemPrimaryText, ListItemSecondaryText } from '@rmwc/list';
 import { Snackbar, SnackbarAction } from '@rmwc/snackbar';
 import { CircularProgress } from '@rmwc/circular-progress';
 import { Button } from '@rmwc/button';
+import Api from './Api.js';
 import './App.css';
 import '@material/button/dist/mdc.button.css';
 import '@material/chips/dist/mdc.chips.css';
@@ -56,10 +50,9 @@ function Error(props) {
 
   return (
     <Snackbar
-      open={true}
-      message={props.error}
-      leading={false}
+      open
       dismissesOnAction
+      message={props.error}
       action={
         <SnackbarAction
           label="Dismiss"
@@ -70,6 +63,8 @@ function Error(props) {
 }
 
 class App extends React.Component {
+  api;
+
   constructor() {
     super();
 
@@ -82,14 +77,8 @@ class App extends React.Component {
       list: [],
       selected: []
     };
-  }
 
-  fetchReset() {
-    this.setState({
-      list: [],
-      isLastPage: false,
-      offset: 0
-    });
+    this.api = new Api();
   }
 
   fetchCities = () => {
@@ -97,28 +86,18 @@ class App extends React.Component {
       return;
     }
 
+    const { list } = this.state;
     this.setState({isLoading: true, error: null});
-    const apiEndpoint = 'http://localhost:3030/cities';
-    const limit = 20;
-    const {filter, offset, list} = this.state;
-
-    fetch(`${apiEndpoint}?filter=${encodeURIComponent(filter)}&limit=${limit}&offset=${offset}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if (Boolean(result.error)) {
-            this.fetchFailed(result.message);
-          } else {
-            this.setState({
-              isLoading: false,
-              isLastPage: result.total - 1 <= offset,
-              list: list.concat(result.data),
-              offset: offset + limit
-            });
-          }
+    this.api.getList(this.state.filter)
+      .then(result => {
+          this.setState({
+            isLoading: false,
+            isLastPage: this.api.isLastPage,
+            list: list.concat(result.data)
+          })
         },
         error => this.fetchFailed(error)
-      )
+      );
   }
 
   fetchFailed(error) {
