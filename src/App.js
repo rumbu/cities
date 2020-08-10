@@ -215,7 +215,7 @@ class App extends React.Component {
         return list;
     }
 
-    this.api.updatePref(id, enabled)
+    this.api.updatePref(id, !enabled)
       .then(() => this.setState(state => {
           const selected = [...state.selected];
           const index = selected.indexOf(id);
