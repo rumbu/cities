@@ -48,7 +48,7 @@ function CityList(props) {
             </ListItemPrimaryText>
             <ListItemSecondaryText>
               <Highlight text={city.subcountry} keyword={props.filter}/>
-              -
+              &nbsp;•&nbsp;
               <Highlight text={city.country} keyword={props.filter}/>
             </ListItemSecondaryText>
           </ListItemText>
@@ -71,6 +71,39 @@ function CityList(props) {
   );
 };
 
+class MyChip extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      city: {},
+      loading: true
+    }
+  }
+
+  componentDidMount() {
+    this.props.onFetch(this.props.id)
+    .then(r => this.setState({
+      city: r,
+      loading: false
+    }));
+  }
+
+  onClick = () => {
+    this.props.onClick(this.props.id, this.state.label);
+  }
+
+  render() {
+    return (
+      <Chip
+        icon={this.state.loading && <CircularProgress />}
+        label={this.state.city.name}
+        onInteraction={this.onClick}
+        title={`${this.state.city.subcountry} • ${this.state.city.country}`}
+      />
+    );
+  }
+}
+
 const queue = createSnackbarQueue();
 function showError(message) {
   if (message.code && message.ABORT_ERR === message.code) {
@@ -86,6 +119,7 @@ function showError(message) {
 }
 
 class App extends React.Component {
+  #nameCache = {};
   api;
 
   constructor() {
@@ -138,6 +172,21 @@ class App extends React.Component {
         list: deferred.hasBeenReset ? [] : list
       }));
     }
+  }
+
+  fetchSingle = (id, attempt = 0) => {
+    return this.#nameCache[id] ?
+      Promise.resolve(this.#nameCache[id]) :
+      this.api.getSingle(id)
+        .then(r => {
+          this.#nameCache[id] = r;
+          return r;
+        }, error => {
+          if (attempt <= 5) {
+            return this.fetchSingle(id, attempt + 1);
+          }
+          showError(error);
+        });
   }
 
   componentDidMount() {
@@ -194,7 +243,7 @@ class App extends React.Component {
             {this.state.selected && 
             <ChipSet>
               {this.state.selected.map(id => 
-              <Chip label={id} onInteraction={this.onToggle.bind(this, id)} />
+              <MyChip key={id} id={id} onClick={this.onToggle} onFetch={this.fetchSingle} />
               )}
             </ChipSet>}
             <p className="u-center">

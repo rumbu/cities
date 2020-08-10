@@ -35,7 +35,7 @@ class Api {
   config = {
     baseUrl: 'http://localhost:3030',
     listEndpoint: '/cities',
-    singleEndpoint: '/city/:id',
+    singleEndpoint: '/cities/:id',
     prefsEndpoint: '/preferences/cities',
     limit: 20
   };
@@ -130,7 +130,7 @@ class Api {
   }
 
   getSingle(id) {
-    return this.sendRequest(`${this.confg.baseUrl}${this.config.singleEndpoint.replace(':id', id)}`);
+    return this.sendRequest(`${this.config.baseUrl}${this.config.singleEndpoint.replace(':id', id)}`);
   }
 }
 
