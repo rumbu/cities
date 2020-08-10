@@ -52,6 +52,17 @@ class Api {
     return Boolean(this.#controller);
   }
 
+  sendRequest(url, opts) {
+    return fetch(url, opts)
+      .then(res => 204 === res.status ? 'OK' : res.json())
+      .then(json => {
+        if (json.error) {
+          return Promise.reject(json.message);
+        }
+        return json;
+      });    
+  }
+
   genQuery(params) {
     return Object.keys(params)
       .map(k => `${k}=${encodeURIComponent(params[k])}`)
@@ -75,12 +86,8 @@ class Api {
     params = {...pager.getQuery(), ...params};
     this.#controller = new AbortController();
 
-    return fetch(`${this.config.baseUrl}${endpoint}?${this.genQuery(params)}`, {signal: this.#controller.signal})
-      .then(res => res.json())
+    return this.sendRequest(`${this.config.baseUrl}${endpoint}?${this.genQuery(params)}`, {signal: this.#controller.signal})
       .then(json => {
-        if (json.error) {
-          return Promise.reject(json.message);
-        }
         pager.next(json.total);
         return json;
       })
@@ -113,20 +120,17 @@ class Api {
   }
 
   updatePref(id, enabled) {
-    return fetch(`${this.config.baseUrl}${this.config.prefsEndpoint}`, {
-      method: 'PATCH',
-      body: JSON.stringify({[id]: enabled}),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.status >= 300 ? res.json() : 'OK')
-      .then(json => {
-        if (json.error) {
-          return Promise.reject(json.message);
+    return this.sendRequest(`${this.config.baseUrl}${this.config.prefsEndpoint}`, {
+        method: 'PATCH',
+        body: JSON.stringify({[id]: enabled}),
+        headers: {
+          'Content-Type': 'application/json'
         }
-        return json;
       });
+  }
+
+  getSingle(id) {
+    return this.sendRequest(`${this.confg.baseUrl}${this.config.singleEndpoint.replace(':id', id)}`);
   }
 }
 
