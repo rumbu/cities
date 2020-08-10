@@ -35,7 +35,7 @@ function Highlight(props) {
 
 function CityList(props) {
   return (
-    <List twoLine className="App-list">
+    <List twoLine ref={props.scrollRef} className="App-list" onScroll={props.onScroll}>
     {props.list.map((city) => {
       const selected = props.selected.includes(city.geonameid);
       return (
@@ -58,7 +58,7 @@ function CityList(props) {
       );
     })}
     {! props.isLoading && 0 === props.list.length && 
-      <div>No results found for <b>{props.filter}</b>.</div>
+      <div>No results found for <b>&quot;{props.filter}&quot;</b>.</div>
     }
     {props.isLoading &&
       <CircularProgress className="App-loader" />
@@ -103,6 +103,8 @@ class App extends React.Component {
 
     this.api = new Api();
     this.fetchCitiesDebounced = debounce(this.fetchCities, 400);
+    this.onScroll = debounce(this._onScroll, 50);
+    this.scrollRef = React.createRef();
   }
 
   filterChange = (e) => {
@@ -140,6 +142,15 @@ class App extends React.Component {
   componentDidMount() {
     this.fetchCities();
   }
+
+  _onScroll = () => {
+    if (this.state.isLoading) return;
+
+    const { current } = this.scrollRef;
+    if (current.scrollTop > current.scrollHeight - current.clientHeight - 200) {
+      this.fetchCitiesMore();
+    }
+  };
 
   onToggle = (id, label) => {
     const { selected } = this.state;
@@ -189,7 +200,7 @@ class App extends React.Component {
             />
 
             <CityList list={this.state.list} selected={this.state.selected} isLoading={this.state.isLoading}
-              updating={this.state.updating} filter={this.state.filter}
+              updating={this.state.updating} filter={this.state.filter} onScroll={this.onScroll} scrollRef={this.scrollRef}
               onToggle={this.onToggle} isLastPage={this.state.isLastPage} onMore={this.fetchCitiesMore}
             />
 
