@@ -191,6 +191,9 @@ class App extends React.Component {
 
   componentDidMount() {
     this.fetchCities();
+    this.api.getPrefs().then(r => this.setState({
+      selected: r.data
+    }));
   }
 
   _onScroll = () => {
