@@ -91,11 +91,19 @@ class Api {
     this._abort();
     filter = filter.trim();
     const pager = this.getPager(Pager.mode.list);
+    let hasBeenReset = false;
     if (this.#filter !== filter) {
       pager.reset();
       this.#filter = filter;
+      hasBeenReset = true;
     }
-    return this._getPaged(this.config.listEndpoint, pager, {filter});
+    if (this.isLastPage) {
+        return false;
+    }
+    return {
+        promise: this._getPaged(this.config.listEndpoint, pager, {filter}),
+        hasBeenReset
+    };
   }
 
   getPrefs() {

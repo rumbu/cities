@@ -4,6 +4,7 @@ import { List, ListItem, ListItemText, ListItemGraphic, ListItemMeta, ListItemPr
 import { SnackbarQueue, createSnackbarQueue } from '@rmwc/snackbar';
 import { CircularProgress } from '@rmwc/circular-progress';
 import { Button } from '@rmwc/button';
+import debounce from 'lodash/debounce';
 import Api from './Api.js';
 import './App.css';
 import '@material/button/dist/mdc.button.css';
@@ -74,28 +75,35 @@ class App extends React.Component {
     };
 
     this.api = new Api();
+    this.fetchCitiesDebounced = debounce(this.fetchCities, 200);
+  }
+
+  filterChange = (e) => {
+    this.setState({filter: e.target.value});
+    this.fetchCitiesDebounced();
   }
 
   fetchCities = () => {
-    if (this.state.isLoading || this.state.isLastPage) {
-      return;
-    }
-
-    const { list } = this.state;
-    this.setState({isLoading: true, error: null});
-    this.api.getList(this.state.filter)
-      .then(result => this.setState({
+    const { list, filter } = this.state;
+    const deferred = this.api.getList(filter);
+    if (deferred) {
+      deferred.promise.then(result => this.setState(state => ({
           isLoading: false,
           isLastPage: this.api.isLastPage,
-          list: list.concat(result.data)
-        }),
+          list: state.list.concat(result.data)
+        })),
         error => {
-          this.setState({
-            isLoading: false
-          })
+          this.setState({isLoading: false})
           showError(error);
         }
       );
+
+      this.setState(state => ({
+        isLoading: true,
+        error: null,
+        list: deferred.hasBeenReset ? [] : list
+      }));
+    }
   }
 
   componentDidMount() {
@@ -146,6 +154,7 @@ class App extends React.Component {
             <TextField icon="filter_alt" placeholder="Type to filter by city name or country"
               style={{width: '100%'}}
               id="city"
+              onChange={this.filterChange}
             />
 
             <CityList list={this.state.list} selected={this.state.selected} isLoading={this.state.isLoading}
