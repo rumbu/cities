@@ -60,7 +60,7 @@ class Api {
           return Promise.reject(json.message);
         }
         return json;
-      });    
+      });
   }
 
   genQuery(params) {
