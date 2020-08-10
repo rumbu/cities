@@ -30,7 +30,7 @@ function CityList(props) {
             <ListItemPrimaryText>{city.name}</ListItemPrimaryText>
             <ListItemSecondaryText>{city.subcountry} - {city.country}</ListItemSecondaryText>
           </ListItemText>
-          {props.updatingId === city.geonameid &&
+          {props.updating.includes(city.geonameid) &&
             <ListItemMeta icon={<CircularProgress />} />
           }
         </ListItem>
@@ -70,7 +70,7 @@ class App extends React.Component {
       isLoading: false,
       list: [],
       selected: [],
-      updatingId: 0
+      updating: []
     };
 
     this.api = new Api();
@@ -103,23 +103,33 @@ class App extends React.Component {
   }
 
   onToggle = (id, label) => {
-    const selected = [...this.state.selected];
-    const index = selected.indexOf(id);
+    const { selected } = this.state;
     const enabled = selected.indexOf(id) > -1;
-    this.setState({updatingId: id});
+    this.setState(state => ({updating: state.updating.concat([id])}));
+    const updateStop = function(list) {
+        const idx = list.indexOf(id);
+        if (idx > -1) list.splice(idx, 1);
+        return list;
+    }
 
     this.api.updatePref(id, enabled)
-      .then(() => {
+      .then(() => this.setState(state => {
+          const selected = [...state.selected];
+          const index = selected.indexOf(id);
+
           if (!enabled && -1 === index) {
             selected.push(id);
           } else if (enabled && index > -1) {
             selected.splice(index, 1);
           }
 
-          this.setState({ selected, updatingId: 0 });
-        },
+          return {
+            selected,
+            updating: updateStop(state.updating)
+          };
+        }),
         error => {
-          this.setState({updatingId: 0});
+          this.setState(state => ({updating: updateStop(state.updating)}));
           showError(`${label} - ${error}`);
         }
       );
@@ -139,7 +149,7 @@ class App extends React.Component {
             />
 
             <CityList list={this.state.list} selected={this.state.selected} isLoading={this.state.isLoading}
-              updatingId={this.state.updatingId}
+              updating={this.state.updating}
               onToggle={this.onToggle} isLastPage={this.state.isLastPage} onMore={this.fetchCities}
             />
 
