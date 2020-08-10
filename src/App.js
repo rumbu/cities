@@ -2,6 +2,7 @@ import React from 'react';
 import { TextField } from '@rmwc/textfield';
 import { List, ListItem, ListItemText, ListItemGraphic, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText } from '@rmwc/list';
 import { SnackbarQueue, createSnackbarQueue } from '@rmwc/snackbar';
+import { Chip, ChipSet } from '@rmwc/chip';
 import { CircularProgress } from '@rmwc/circular-progress';
 import { Button } from '@rmwc/button';
 import debounce from 'lodash/debounce';
@@ -190,6 +191,12 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <div className="App-form">
+            {this.state.selected && 
+            <ChipSet>
+              {this.state.selected.map(id => 
+              <Chip label={id} onInteraction={this.onToggle.bind(this, id)} />
+              )}
+            </ChipSet>}
             <p className="u-center">
               <label htmlFor="city">Select your favorite cities</label>
             </p>
