@@ -69,9 +69,9 @@ class Api {
       .join('&');
   }
 
-  getPager(mode) {
+  getPager(mode, limit = 0) {
     if (!this.pager || this.pager.mode !== mode) {
-      this.pager = new Pager(mode, this.config.limit);
+      this.pager = new Pager(mode, limit || this.config.limit);
     }
     return this.pager;
   }
@@ -115,7 +115,7 @@ class Api {
 
   getPrefs() {
     this._abort();
-    const pager = this.getPager(Pager.mode.pref);
+    const pager = this.getPager(Pager.mode.pref, 1000);
     return this._getPaged(this.config.prefsEndpoint, pager);
   }
 
